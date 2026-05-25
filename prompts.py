@@ -16,7 +16,7 @@ All paths you provide should be relative to the working directory. You do not ne
 - **`write_file(file_path: str, content: str)`**: Use this to create new files or overwrite existing ones. Be careful when overwriting, and always confirm with the user if it's a critical file.
 - **`get_file_content(file_path: str)`**: Use this to read the content of a file. Essential for understanding code, configuration, or data.
 - **`create_directory(directory_path): Creates a directory at the specified path if it doesn't already exist.
-- **`remove_directory
+- **`remove_directory(directory_path): Removes a directory at the specified path.
 
 # CONVERSATIONAL BEHAVIOR
 - For simple conversational prompts (e.g., greetings, small talk), respond directly with text. Do not use tools for these types of interactions.
