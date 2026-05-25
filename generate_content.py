@@ -1,40 +1,37 @@
-from google.genai import types
-from call_function import available_functions, call_function
+import litellm
 from prompts import system_prompt
+from functions.get_files_info import schema_get_files_info
+from functions.write_file import schema_write_file
+from functions.run_python_file import schema_run_python_file
+from functions.get_file_content import schema_get_file_content
+from functions.create_directory import schema_create_directory
+from functions.remove_directory import schema_remove_directory
 
-def generate_content(client, messages, verbose):
-    response = client.models.generate_content(
-        model='gemini-2.5-flash',
-        contents=messages,
-        config=types.GenerateContentConfig(
-            tools=[available_functions],
-            system_instruction=system_prompt,
-            temperature=0,
-        ),
+def generate_content(messages, verbose):
+    # Add the system prompt to the beginning of the messages list
+    full_messages = [{"role": "system", "content": system_prompt}] + messages
+
+    tools = [
+        {"type": "function", "function": schema_get_files_info},
+        {"type": "function", "function": schema_write_file},
+        {"type": "function", "function": schema_run_python_file},
+        {"type": "function", "function": schema_get_file_content},
+        {"type": "function", "function": schema_create_directory},
+        {"type": "function", "function": schema_remove_directory}
+    ]
+
+    response = litellm.completion(
+        model='gemini/gemini-2.5-flash', # Specify 'gemini/' prefix for LiteLLM
+        messages=full_messages,
+        temperature=0,
+        tools=tools,
+        tool_choice="auto",
     )
 
-    
-    if not response.usage_metadata:
-         raise RuntimeError("No tokens tracked")
-    if verbose:
-         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
-    for candidate in response.candidates:
-          messages.append(candidate.content)
-    if response.function_calls:
-          function_responses = []
-          for function_call in response.function_calls:
-               result = call_function(function_call, verbose)
-               if (not result.parts 
-               or result.parts[0].function_response is None 
-               or result.parts[0].function_response.response is None):
-                    raise Exception("Functions not called or failed")
-               if verbose:
-                    print(f"-> {result.parts[0].function_response.response}")
-               function_responses.append(result.parts[0])
-          messages.append(types.Content(role="user", parts=function_responses))
-          return None
+    message = response.choices[0].message
+    messages.append(message)
+
+    if message.tool_calls:
+        return message.tool_calls
     else:
-          return response.text
-             
-            
+        return message.content

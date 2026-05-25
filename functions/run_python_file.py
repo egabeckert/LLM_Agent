@@ -1,66 +1,81 @@
 import os 
 import subprocess
-from google.genai import types
+from config import SANDBOX_ROOT
+import sys
 
+# 1. Made working_directory optional and added **kwargs
 def run_python_file(
-    working_directory: str, file_path: str, args: list[str] | None = None
+    file_path: str, args: list[str] | None = None, working_directory: str = ".", **kwargs
 ) -> str:
-        try:
+    try:
+        # 2. Capture common hallucinated names
+        if "directory" in kwargs:
+            working_directory = kwargs["directory"]
+
+        base_path = os.path.abspath(SANDBOX_ROOT)
+        # We combine sandbox + working_dir + file_path
+        target_dir = os.path.normpath(os.path.join(base_path, working_directory))
+        target_file = os.path.normpath(os.path.join(target_dir, file_path))
         
-            working_file_abs = os.path.abspath(working_directory)
-            target_file = os.path.normpath(os.path.join(working_file_abs, file_path))
-            # Will be True or False
-            valid_target_file = os.path.commonpath([working_file_abs, target_file]) == working_file_abs
-            if valid_target_file is False:
-                return f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
-            if os.path.isfile(target_file) is False:
-                 return f'Error: "{file_path}" does not exist or is not a regular file'
-            if target_file.endswith('.py') is False:
-                 return f'Error: "{file_path}" is not a Python file'
+        # Security Gatekeeper: Ensure we are still inside the sandbox
+        if not os.path.commonpath([base_path, target_file]) == base_path:
+            return f'Error: Access denied. "{file_path}" is outside the sandbox.'
 
-            command = ["python", target_file]
-            if args is not None:
-                 command.extend(args)
+        if not os.path.isfile(target_file):
+            return f'Error: "{file_path}" does not exist or is not a regular file'
+        if not target_file.endswith('.py'):
+            return f'Error: "{file_path}" is not a Python file'
 
-    
-            result = subprocess.run(command, cwd=working_file_abs, capture_output=True, timeout=30, text=True,)
-            return_statement = []
-            if result.returncode != 0:
-                 return_statement.append(f"Process exited with code {result.returncode}")
-            if result.stderr == "" and result.stdout == "":
-                 return_statement.append("No output produced")
-            if result.stdout != "":
-                return_statement.append(f"STDOUT:{result.stdout}")
-            if result.stderr != "":
-                return_statement.append(f"STDERR:{result.stderr}\n")
+        command = [sys.executable, target_file]
+        if args is not None:
+            command.extend(args)
+
+        # 3. Use target_dir for cwd to ensure the script runs where it expects
+        result = subprocess.run(
+            command, 
+            cwd=target_dir, 
+            capture_output=True, 
+            timeout=30, 
+            text=True
+        )
+        
+        return_statement = []
+        if result.returncode != 0:
+            return_statement.append(f"Process exited with code {result.returncode}")
+        if not result.stderr and not result.stdout:
+            return_statement.append("No output produced")
+        if result.stdout:
+            return_statement.append(f"STDOUT:\n{result.stdout}")
+        if result.stderr:
+            return_statement.append(f"STDERR:\n{result.stderr}")
             
-            return "\n".join(return_statement)
+        return "\n".join(return_statement)
         
+    except Exception as e:
+        return f"Error executing python file: {e}"
 
-        
-        except Exception as e:
-            return f"Error: executing python file: {e}"
-        
-
-schema_run_python_file = types.FunctionDeclaration(
-    name="run_python_file",
-    description="Runs provided python file",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        required=["file_path"],
-        properties={
-            "file_path": types.Schema(
-                type=types.Type.STRING,
-                description="file path to the python file to be run",
-            ),
-            "args": types.Schema(
-                type=types.Type.ARRAY,
-                items=types.Schema(
-                    type=types.Type.STRING,
-                ),
-                description="optional arguments to pass to the python file",
-            ),
+schema_run_python_file = {
+    "name": "run_python_file",
+    "description": "Executes a Python file within the sandbox environment.",
+    "parameters": {
+        "type": "object",
+        "required": ["file_path"],
+        "properties": {
+            "file_path": {
+                "type": "string",
+                "description": "The path to the python file to be run, relative to the working directory.",
+            },
+            "working_directory": {
+                "type": "string",
+                "description": "Optional directory to run the script from (defaults to sandbox root).",
+            },
+            "args": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                },
+                "description": "Optional arguments to pass to the python file.",
+            },
         },
-    ),
-)
-
+    },
+}

@@ -1,44 +1,47 @@
 import os
-from config import MAX_CHARS
-from google.genai import types
+from config import MAX_CHARS, SANDBOX_ROOT
 
-def get_file_content(working_directory: str, file_path: str) -> str:
-        
+def get_file_content(file_path: str, **kwargs) -> str:
     try:
-        working_path_abs = os.path.abspath(working_directory)
-        target_path = os.path.normpath(os.path.join(working_path_abs, file_path))
-        # Will be True or False
-        valid_target_path = os.path.commonpath([working_path_abs, target_path]) == working_path_abs
-        if valid_target_path is False:
-            return f'Error: Cannot read "{file_path}" as it is outside the permitted working directory'
-        
-        if os.path.isfile(target_path) is False:
-            return f'Error: File not found or is not a regular file: "{file_path}"'
+        # Handle potential hallucinated parameter names (like 'path')
+        if "path" in kwargs and not file_path:
+            file_path = kwargs["path"]
 
+        # 1. Enforce the sandbox as the base
+        base_path = os.path.abspath(SANDBOX_ROOT)
         
+        # 2. Resolve the target path
+        target_path = os.path.normpath(os.path.join(base_path, file_path))
+        
+        # 3. Security check: is the result still inside the base?
+        if not os.path.commonpath([base_path, target_path]) == base_path:
+            return f'Error: Access denied. "{file_path}" is outside the sandbox.'
+        
+        # 4. Check existence
+        if not os.path.isfile(target_path):
+            return f'Error: File not found: "{file_path}"'
+
+        # 5. Read the safe path
         with open(target_path, "r") as f:
             file_content_string = f.read(MAX_CHARS)
-            # After reading the first MAX_CHARS...
             if f.read(1):
-                file_content_string += f'[...File "{target_path}" truncated at {MAX_CHARS} characters]'
+                file_content_string += f'\n[...File truncated at {MAX_CHARS} characters]'
         return file_content_string
+
     except Exception as e:
          return f"Error: {e}"
     
-schema_get_file_content = types.FunctionDeclaration(
-    name = "get_file_content",
-    description="path to the file to read, relative to the working directory",
-    parameters=types.Schema(
-            type=types.Type.OBJECT,
-            required=["file_path"],
-            properties={
-                "file_path": types.Schema(
-                    type=types.Type.STRING,
-                    description="File contents from specified path, relative to the working directory (default is the working directory itself)"
-                    )
-                }
-        )
-    )
-         
-
-    
+schema_get_file_content = {
+    "name": "get_file_content",
+    "description": "Reads the content of a specific file from the sandbox.",
+    "parameters": {
+        "type": "object",
+        "required": ["file_path"],
+        "properties": {
+            "file_path": {
+                "type": "string",
+                "description": "The path to the file to read, relative to the sandbox root."
+            }
+        }
+    }
+}
