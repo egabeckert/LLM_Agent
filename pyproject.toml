@@ -1,5 +1,5 @@
 [project]
-name = "chudnelius"
+name = "chudnelius3.0"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,3 +8,44 @@ dependencies = [
     "litellm",
     "boto3",
 ]
+
+[dependency-groups]
+dev = [
+    "pylint>=3.0.0",
+    "pytest",
+]
+
+
+[tool.hatch.build.targets.wheel]
+# Replace 'src/chudnelius' with the actual path to your package directory
+# If your code is directly in a folder named 'chudnelius' at the root, use:
+packages = ["chudnelius3.0"] 
+
+[tool.pylint]
+lint="chudnelius.cli:run_lint"
+test="pytest"
+
+[tool.pylint."MESSAGES CONTROL"]
+# Disable common noisy checks for cleaner output
+disable = [
+    "missing-module-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "too-few-public-methods",
+    "invalid-name", # Often too strict for loop vars like 'i', 'j'
+]
+
+
+
+
+[tool.pylint.FORMAT]
+# Set max line length to match Black formatter default
+max-line-length = 88
+
+[tool.pylint.BASIC]
+# Allow single letter variable names often used in math/loops
+good-names = ["i", "j", "k", "x", "y", "z", "ex", "Run", "_"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

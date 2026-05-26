@@ -6,6 +6,8 @@ from functions.run_python_file import schema_run_python_file
 from functions.get_file_content import schema_get_file_content
 from functions.create_directory import schema_create_directory
 from functions.remove_directory import schema_remove_directory
+from functions.remove_file import schema_remove_file
+from functions.move_file import schema_move_file
 
 def generate_content(messages, verbose):
     # Add the system prompt to the beginning of the messages list
@@ -17,7 +19,9 @@ def generate_content(messages, verbose):
         {"type": "function", "function": schema_run_python_file},
         {"type": "function", "function": schema_get_file_content},
         {"type": "function", "function": schema_create_directory},
-        {"type": "function", "function": schema_remove_directory}
+        {"type": "function", "function": schema_remove_directory},
+        {"type": "function", "function": schema_remove_file},
+        {"type": "function", "function": schema_move_file},
     ]
 
     response = litellm.completion(

@@ -1,17 +1,23 @@
 import os
 import sys
-def remove_directory(directory_path):
-    if __name__ == "__main__":
-        if len(sys.argv) > 1:
-            path_to_remove = sys.argv[1]
-        try:
-            os.rmdir(path_to_remove)
-            print(f"Directory '{path_to_remove}' removed successfully.")
-        except OSError as e:
-            print(f"Error removing directory '{path_to_remove}': {e}")
+
+def remove_directory(directory_path: str) -> dict:
+    try:
+        os.rmdir(directory_path)
+        return {"result": f"Directory '{directory_path}' removed successfully."}
+    except OSError as e:
+        return {"error": f"Error removing directory '{directory_path}': {e}"}
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        path_to_remove = sys.argv[1]
+        result = remove_directory(path_to_remove)
+        if "error" in result:
+            print(result["error"])
+        else:
+            print(result["result"])
     else:
         print("Usage: python remove_directory.py <directory_path>")
-
 
 schema_remove_directory = {
     "name": "remove_directory",

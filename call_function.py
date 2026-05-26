@@ -6,6 +6,8 @@ from functions.run_python_file import run_python_file
 from functions.get_file_content import get_file_content
 from functions.remove_directory import remove_directory
 from functions.create_directory import create_directory
+from functions.remove_file import remove_file
+from functions.move_file import move_file
 
 # Mapping of function names to actual Python implementations
 function_map: dict[str, Callable[..., str]] = {
@@ -14,7 +16,9 @@ function_map: dict[str, Callable[..., str]] = {
     "run_python_file": run_python_file,
     "write_file": write_file,
     "remove_directory": remove_directory,
-    "create_directory": create_directory
+    "create_directory": create_directory,
+    "remove_file": remove_file,
+    "move_file": move_file,
 }
 
 def call_function(
