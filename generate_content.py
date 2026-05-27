@@ -33,9 +33,5 @@ def generate_content(messages, verbose):
     )
 
     message = response.choices[0].message
-    messages.append(message)
+    return message
 
-    if message.tool_calls:
-        return message.tool_calls
-    else:
-        return message.content

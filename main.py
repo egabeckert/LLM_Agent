@@ -38,13 +38,24 @@ def main():
     ]
 
     for _ in range(20):
-        response = generate_content(messages, args.verbose)
+        message = generate_content(messages, args.verbose)
 
-        if isinstance(response, list) and response and hasattr(response[0], 'function'): # Check for tool_calls
-            _handle_tool_calls(response, messages, args.verbose)
-        elif response:
+        # 1. Always append the assistant message to history as a clean dict
+        messages.append(message.model_dump(exclude_none=True))
+
+        # 2. If the assistant wants to call tools, do that and continue the loop
+        if message.tool_calls:
+            _handle_tool_calls(message.tool_calls, messages, args.verbose)
+        
+        # 3. If there are no tool calls, check for text content
+        elif message.content is not None:
             print("Final response:")
-            print(response)
+            print(message.content)
+            return
+        
+        # 4. Fallback if the model returns nothing at all
+        else:
+            print("The agent returned an empty response.")
             return
 
     print("Maximum iterations reached")
