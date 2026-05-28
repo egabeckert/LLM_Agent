@@ -1,4 +1,4 @@
-from generate_content import generate_content
+from agent.generate_content import generate_content
 
 def main():
     messages = [

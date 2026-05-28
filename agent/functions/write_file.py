@@ -1,5 +1,5 @@
 import os
-from config import SANDBOX_ROOT
+from agent.config import SANDBOX_ROOT
 
 def write_file(file_path: str, content: str, **kwargs) -> str:
     try:

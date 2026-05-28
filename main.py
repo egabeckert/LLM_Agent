@@ -3,8 +3,8 @@ import argparse
 import sys
 import json
 from dotenv import load_dotenv
-from generate_content import generate_content
-from call_function import call_function
+from agent.generate_content import generate_content
+from agent.call_function import call_function
 
 def _handle_tool_calls(tool_calls, messages, verbose):
     """Handles tool calls and appends their outputs to messages."""
@@ -55,7 +55,8 @@ def main():
         
         # 4. Fallback if the model returns nothing at all
         else:
-            print("The agent returned an empty response.")
+            print("The agent returned an empty response or an unexpected message structure.")
+            print(f"Message object: {message.model_dump_json(indent=2)}") # Add this line for debugging
             return
 
     print("Maximum iterations reached")

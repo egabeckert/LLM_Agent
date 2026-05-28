@@ -1,5 +1,5 @@
 import os
-from config import MAX_CHARS, SANDBOX_ROOT
+from agent.config import MAX_CHARS, SANDBOX_ROOT
 
 def get_file_content(file_path: str, **kwargs) -> str:
     try:

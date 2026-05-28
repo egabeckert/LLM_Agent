@@ -1,6 +1,6 @@
 import os 
 import subprocess
-from config import SANDBOX_ROOT
+from agent.config import SANDBOX_ROOT
 import sys
 
 # 1. Made working_directory optional and added **kwargs

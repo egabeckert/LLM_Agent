@@ -1,7 +1,7 @@
 # calculator/tests.py
 
 import unittest
-from pkg.calculator import Calculator
+from sandbox.calculator.pkg.calculator import Calculator
 
 
 class TestCalculator(unittest.TestCase):

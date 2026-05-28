@@ -1,13 +1,13 @@
 import os
 from collections.abc import Callable
-from functions.get_files_info import get_files_info
-from functions.write_file import write_file
-from functions.run_python_file import run_python_file
-from functions.get_file_content import get_file_content
-from functions.remove_directory import remove_directory
-from functions.create_directory import create_directory
-from functions.remove_file import remove_file
-from functions.move_file import move_file
+from agent.functions.get_files_info import get_files_info
+from agent.functions.write_file import write_file
+from agent.functions.run_python_file import run_python_file
+from agent.functions.get_file_content import get_file_content
+from agent.functions.remove_directory import remove_directory
+from agent.functions.create_directory import create_directory
+from agent.functions.remove_file import remove_file
+from agent.functions.move_file import move_file
 
 # Mapping of function names to actual Python implementations
 function_map: dict[str, Callable[..., str]] = {

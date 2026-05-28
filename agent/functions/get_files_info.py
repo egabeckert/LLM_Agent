@@ -1,6 +1,6 @@
 import os
 
-from config import SANDBOX_ROOT
+from agent.config import SANDBOX_ROOT
 
 
 def get_files_info(directory: str = ".", **kwargs) -> str:

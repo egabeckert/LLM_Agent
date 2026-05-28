@@ -1,13 +1,13 @@
 import litellm
-from prompts import system_prompt
-from functions.get_files_info import schema_get_files_info
-from functions.write_file import schema_write_file
-from functions.run_python_file import schema_run_python_file
-from functions.get_file_content import schema_get_file_content
-from functions.create_directory import schema_create_directory
-from functions.remove_directory import schema_remove_directory
-from functions.remove_file import schema_remove_file
-from functions.move_file import schema_move_file
+from agent.prompts import system_prompt
+from agent.functions.get_files_info import schema_get_files_info
+from agent.functions.write_file import schema_write_file
+from agent.functions.run_python_file import schema_run_python_file
+from agent.functions.get_file_content import schema_get_file_content
+from agent.functions.create_directory import schema_create_directory
+from agent.functions.remove_directory import schema_remove_directory
+from agent.functions.remove_file import schema_remove_file
+from agent.functions.move_file import schema_move_file
 
 def generate_content(messages, verbose):
     # Add the system prompt to the beginning of the messages list

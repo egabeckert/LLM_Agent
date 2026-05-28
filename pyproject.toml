@@ -7,6 +7,9 @@ requires-python = ">=3.12"
 dependencies = [
     "litellm",
     "boto3",
+    "textual>=0.1.18",
+    "textual-dev>=1.8.0",
+    "pip>=26.1.1",
 ]
 
 [dependency-groups]
