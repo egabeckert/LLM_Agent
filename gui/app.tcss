@@ -45,7 +45,7 @@ Screen {
 
 #status_bar {
     width: 100%;
-    height: 5;
+    height: 4;
     background: #141a16;
     padding: 0 1;
     border-bottom: tall #2a3d30;
@@ -62,7 +62,7 @@ Screen {
 
 #status_middle {
     width: 1fr;
-    height: 5;
+    height: 4;
 }
 
 
@@ -70,7 +70,7 @@ Screen {
 
 BurgerIcon {
     width: 3;
-    height: 3;
+    height: 2;
     margin: 1 1;
     background: #1c2620;
     color: #c49fd4;
