@@ -45,7 +45,7 @@ Screen {
 
 #status_bar {
     width: 100%;
-    height: 4;
+    height: 3;
     background: #141a16;
     padding: 0 1;
     border-bottom: tall #2a3d30;
@@ -62,7 +62,7 @@ Screen {
 
 #status_middle {
     width: 1fr;
-    height: 4;
+    height: 3;
 }
 
 

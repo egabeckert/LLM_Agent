@@ -4,74 +4,13 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from textual.app import App, ComposeResult
-from textual.reactive import reactive
-from textual.widgets import Footer, RichLog, Input, Static, Button, Label
+from textual.widgets import Footer, RichLog, Input, Static
 from textual.containers import Vertical, Horizontal, Middle
-from textual.screen import ModalScreen
-from textual.events import Click
 from dotenv import load_dotenv
 
+from gui.widgets import ASCII_BANNER, BurgerIcon, MenuModal
 from gui.agent_logic import run_agent
 from utils.conversation_memory import load_memory, save_memory
-
-
-ASCII_BANNER = """\
-  ██████╗██╗  ██╗██╗   ██╗██████╗ ███╗   ██╗███████╗██╗     ██╗██╗   ██╗███████╗
- ██╔════╝██║  ██║██║   ██║██╔══██╗████╗  ██║██╔════╝██║     ██║██║   ██║██╔════╝
- ██║     ███████║██║   ██║██║  ██║██╔██╗ ██║█████╗  ██║     ██║██║   ██║███████╗
- ██║     ██╔══██║██║   ██║██║  ██║██║╚██╗██║██╔══╝  ██║     ██║██║   ██║╚════██║
- ╚██████╗██║  ██║╚██████╔╝██████╔╝██║ ╚████║███████╗███████╗██║╚██████╔╝███████║
-  ╚═════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚══════╝\
-"""
-
-# Burger renders as three stacked bars; X renders as a close symbol
-BURGER_CLOSED = "≡"
-BURGER_OPEN   = "✕"
-
-
-class BurgerIcon(Static):
-    """
-    Clickable icon extending Static so content-align centering works correctly.
-    Shows ≡ when menu is closed, ✕ when open. State driven by the app.
-    """
-
-    is_open: reactive[bool] = reactive(False)
-
-    def __init__(self, **kwargs):
-        super().__init__(BURGER_CLOSED, **kwargs)
-
-    def watch_is_open(self, value: bool) -> None:
-        """Reactive watcher — updates content automatically when state changes."""
-        self.update(BURGER_OPEN if value else BURGER_CLOSED)
-
-    def set_open(self, state: bool) -> None:
-        self.is_open = state
-
-    def on_click(self) -> None:
-        if self.is_open:
-            self.app.action_close_menu()
-        else:
-            self.app.action_open_menu()
-
-
-class MenuModal(ModalScreen):
-    """Burger menu overlay — dimmed background, click-outside to close."""
-
-    BINDINGS = [("escape", "dismiss", "Close")]
-
-    def compose(self) -> ComposeResult:
-        with Vertical(id="menu_dialog"):
-            yield Label("Menu", id="menu_title")
-            yield Button("🗑  Clear History", id="menu_clear",      variant="default")
-            yield Button("📸  Screenshot",    id="menu_screenshot", variant="default")
-            yield Button("✕  Quit",          id="menu_quit",       variant="error")
-
-    def on_click(self, event: Click) -> None:
-        if self.get_widget_at(event.screen_x, event.screen_y)[0] is self:
-            self.dismiss(None)
-
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        self.dismiss(event.button.id)
 
 
 class ChudneliusTUI(App):
@@ -90,6 +29,8 @@ class ChudneliusTUI(App):
         super().__init__()
         self.messages: list[dict] = load_memory()
         load_dotenv()
+
+    # ── Layout ────────────────────────────────────────────────────────────────
 
     def compose(self) -> ComposeResult:
         yield Static(ASCII_BANNER, id="app_banner")
@@ -117,6 +58,8 @@ class ChudneliusTUI(App):
                     chat_history.write(f"[bold orange1]Agent:[/bold orange1] {content}")
         self.query_one("#user_input_field", Input).focus()
 
+    # ── Status ────────────────────────────────────────────────────────────────
+
     def update_agent_status(self, status: str) -> None:
         indicator = "◌" if status != "Idle" else "●"
         self.query_one("#agent_status", Static).update(f"{indicator} {status}")
@@ -141,7 +84,6 @@ class ChudneliusTUI(App):
         self.push_screen(MenuModal(), handle_choice)
 
     def action_close_menu(self) -> None:
-        """Called when the burger is clicked while the menu is open."""
         self._burger().set_open(False)
         self.pop_screen()
 
