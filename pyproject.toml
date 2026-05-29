@@ -10,6 +10,9 @@ dependencies = [
     "textual>=0.1.18",
     "textual-dev>=1.8.0",
     "pip>=26.1.1",
+    "fastapi>=0.136.3",
+    "uvicorn>=0.48.0",
+    "python-multipart>=0.0.29",
 ]
 
 [dependency-groups]
