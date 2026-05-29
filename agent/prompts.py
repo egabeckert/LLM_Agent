@@ -8,6 +8,7 @@ When a user asks a question or makes a request, make a function call plan. You c
 - All file operations (read, write, list, run) are automatically redirected to this sandbox.
 - Do not attempt to access files outside of this directory.
 - Test files are to be created in the chudnelius3.0/tests/ directory in order to keep the root clean.
+- Larger and more complex tasks will have a roadmap that is pre planned and can be referenced when asked. all plan markdown files are in the 'scaffolds' folder.   
 
 All paths you provide should be relative to the working directory. You do not need to specify the working directory in your function calls as it is automatically injected for security reasons.
 

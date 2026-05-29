@@ -11,4 +11,5 @@ wheels/
 .venv
 .venv/
 chud_info.env
+data/
 

@@ -1,0 +1,221 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Chudnelius TUI — app.tcss
+   Dark theme · pastel green & pink/purple palette
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+/* ── Palette reference ───────────────────────────────────────────────────────
+   bg-deep:      #0d0f0e   near-black with a green tint
+   bg-raised:    #141a16   panels, header, footer
+   bg-lift:      #1c2620   subtle lift for inputs, burger
+   border-dim:   #2a3d30   unfocused borders
+   border-focus: #7ecba1   focused border — soft mint green
+   text-base:    #d4e8d8   main text — pale green-white
+   text-muted:   #5e7a65   dimmed text
+   accent-green: #7ecba1   mint — focus rings, status dot
+   accent-pink:  #e8a0bf   dusty rose — titles, banner
+   accent-purple:#c49fd4   soft lavender — key labels, burger icon
+   accent-coral: #e07a8a   error/quit red-pink
+   ───────────────────────────────────────────────────────────────────────── */
+
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+
+Screen {
+    background: #0d0f0e;
+    color: #d4e8d8;
+    layout: vertical;
+}
+
+
+/* ── ASCII Banner ────────────────────────────────────────────────────────── */
+
+#app_banner {
+    width: 100%;
+    height: 8;
+    content-align: center middle;
+    color: #e8a0bf;
+    background: #0d0f0e;
+    text-style: bold;
+    padding-top: 1;
+}
+
+
+/* ── Status bar ──────────────────────────────────────────────────────────── */
+
+#status_bar {
+    width: 100%;
+    height: 5;
+    background: #141a16;
+    padding: 0 1;
+    border-bottom: tall #2a3d30;
+    align: left middle;
+    layout: horizontal;
+}
+
+#agent_status {
+    color: #7ecba1;
+    text-style: italic;
+    content-align: left middle;
+    padding-left: 1;
+}
+
+#status_middle {
+    width: 1fr;
+    height: 5;
+}
+
+
+/* ── Burger icon ─────────────────────────────────────────────────────────── */
+
+BurgerIcon {
+    width: 3;
+    height: 3;
+    margin: 1 1;
+    background: #1c2620;
+    color: #c49fd4;
+    border: none;
+    content-align: center middle;
+    text-style: bold;
+    padding: 0;
+}
+
+BurgerIcon:hover {
+    background: #2a3d30;
+    color: #e8a0bf;
+}
+
+BurgerIcon:focus {
+    border: none;
+    background: #2a3d30;
+}
+
+
+/* ── Menu modal ──────────────────────────────────────────────────────────── */
+
+MenuModal {
+    align: left top;
+    background: rgba(0, 0, 0, 0);
+}
+
+MenuModal > .modal--background {
+    background: rgba(13, 15, 14, 0.60);
+}
+
+#menu_dialog {
+    width: 40;
+    height: auto;
+    margin: 12 0 0 8;
+    background: #141a16;
+    border: round #3d5244;
+    padding: 1 2;
+}
+
+#menu_title {
+    color: #e8a0bf;
+    text-style: bold;
+    width: 100%;
+    content-align: center middle;
+    padding-bottom: 1;
+    border-bottom: tall #2a3d30;
+    margin-bottom: 1;
+}
+
+#menu_dialog Button {
+    width: 100%;
+    margin-bottom: 1;
+    background: #1c2620;
+    color: #d4e8d8;
+    border: none;
+    text-align: left;
+}
+
+#menu_dialog Button:hover {
+    background: #2a3d30;
+    color: #e8a0bf;
+}
+
+#menu_dialog Button.error {
+    background: #2a1a1e;
+    color: #e07a8a;
+}
+
+#menu_dialog Button.error:hover {
+    background: #3a1e24;
+    color: #f09090;
+}
+
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+
+Footer {
+    background: #141a16;
+    color: #5e7a65;
+    border-top: tall #2a3d30;
+}
+
+Footer > .footer--key {
+    background: #1c2620;
+    color: #c49fd4;
+    text-style: bold;
+}
+
+Footer > .footer--description {
+    color: #7a9e82;
+}
+
+
+/* ── Main layout ─────────────────────────────────────────────────────────── */
+
+#main_layout {
+    height: 1fr;
+    padding: 1 2;
+    background: #0d0f0e;
+}
+
+
+/* ── Chat log ────────────────────────────────────────────────────────────── */
+
+#chat_history_display {
+    height: 1fr;
+    border: round #2a3d30;
+    background: #0f1410;
+    padding: 1 2;
+    scrollbar-color: #3d5244;
+    scrollbar-color-hover: #7ecba1;
+    scrollbar-background: #141a16;
+}
+
+#chat_history_display:focus {
+    border: round #7ecba1;
+}
+
+
+/* ── Input ───────────────────────────────────────────────────────────────── */
+
+#user_input_field {
+    height: 3;
+    margin-top: 1;
+    border: round #2a3d30;
+    background: #141a16;
+    color: #d4e8d8;
+    padding: 0 2;
+}
+
+#user_input_field:focus {
+    border: round #7ecba1;
+    background: #1c2620;
+    color: #e8f5eb;
+}
+
+#user_input_field.-disabled {
+    background: #0d0f0e;
+    color: #3a4e3d;
+    border: round #1a2a1e;
+    opacity: 0.5;
+}
+
+#user_input_field > .input--placeholder {
+    color: #3d5244;
+    text-style: italic;
+}

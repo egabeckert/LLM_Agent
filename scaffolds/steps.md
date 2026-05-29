@@ -33,10 +33,12 @@ This document outlines the initial steps for building a Textual TUI for an agent
 
 ## Phase 4: Advanced Features (Optional)
 
-1.  **Command Palette**: Implement a command palette for quick actions.
-2.  **Theming**: Allow users to switch between different themes.
-3.  **Configuration**: Load agent configuration from a file.
-4.  **Tool Visualization**: If the agent uses tools, consider how to visually represent tool usage and output.
+1. ** Answer Streaming: Have real-time feedback of tool-calls and thinking. 
+2. ** Vertical Scroll: Currently, there is no vertical scroll for when context length is bigger than the window. There is horizontal scroll already. 
+2. **Command Palette**: Implement a command palette for quick actions.
+3.  **Theming**: Allow users to switch between different themes.
+4.  **Configuration**: Load agent configuration from a file.
+5.  **Tool Visualization**: If the agent uses tools, consider how to visually represent tool usage and output.
 
 ## Relevant Files for `gui` folder:
 
